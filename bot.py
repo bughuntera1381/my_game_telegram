@@ -2,16 +2,23 @@ import telebot
 import os
 from flask import Flask
 
-# توکن ربات جدیدت (mmd2gameoldbot) رو اینجا بذار
+# توکن رباتت رو اینجا بذار
 BOT_TOKEN = '9177653819:AAGM6Qiu2nORwcntM3BSbNNyv27uYlgkaus'
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# یه دستور ساده برای تست
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "سلام داداش! من به سرور وصل هستم.")
+    bot.reply_to(message, "سلام! برای بازی دستور /play رو بزن.")
 
-# بخشی که Render لازم داره تا ربات رو خاموش نکنه
+@bot.message_handler(commands=['play'])
+def send_game(message):
+    bot.send_game(chat_id=message.chat.id, game_short_name='my_game')
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    if call.game_short_name == 'my_game':
+        bot.answer_callback_query(callback_query_id=call.id, url='https://bughuntera1381.github.io/game/')
+
 app = Flask(__name__)
 @app.route('/')
 def home():
